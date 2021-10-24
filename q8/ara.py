@@ -270,7 +270,7 @@ def main():
     
     def plan():
         a_star = ARAPlanner(ox, oy, grid_size, robot_radius)
-        rx, ry = a_star.planning(sx, sy, gx, gy, 10, 2, 0.1)
+        rx, ry = a_star.planning(sx, sy, gx, gy, 10, 2, float(argv.pop()))
         plt.plot(rx, ry, "-r")
         print(f"Distance Traveled: {findPathDistance(rx, ry)}")
 
