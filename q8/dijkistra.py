@@ -8,11 +8,11 @@ author: Atsushi Sakai(@Atsushi_twi)
 
 import matplotlib.pyplot as plt
 import math
-
+from sys import argv
 from distance import findPathDistance
 from timing import timeIt
 
-show_animation = True
+show_animation = True if len(argv) > 1 and argv[2] == "-a" else False
 
 
 class Dijkstra:

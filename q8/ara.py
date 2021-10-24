@@ -2,11 +2,11 @@ import math
 from time import time
 
 import matplotlib.pyplot as plt
-
+from sys import argv
 from distance import findPathDistance
 from timing import timeIt
 
-show_animation = True
+show_animation = True if len(argv) > 1 and argv[2] == "-a" else False
 
 
 class ARAPlanner:
@@ -270,7 +270,7 @@ def main():
     
     def plan():
         a_star = ARAPlanner(ox, oy, grid_size, robot_radius)
-        rx, ry = a_star.planning(sx, sy, gx, gy, 10, 2, 4.5)
+        rx, ry = a_star.planning(sx, sy, gx, gy, 10, 2, 0.1)
         plt.plot(rx, ry, "-r")
         print(f"Distance Traveled: {findPathDistance(rx, ry)}")
 
