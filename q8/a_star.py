@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 from distance import findPathDistance
 from timing import timeIt
 
-show_animation = True if len(argv) > 1 and argv[2] == "-a" else False
+show_animation = True if len(argv) > 1 and argv[1] == "-a" else False
 
 
 class AStarPlanner:
