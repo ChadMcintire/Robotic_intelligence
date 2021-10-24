@@ -1,26 +1,15 @@
-"""
-
-A* grid planning
-
-author: Atsushi Sakai(@Atsushi_twi)
-        Nikos Kanargias (nkana@tee.gr)
-
-See Wikipedia article (https://en.wikipedia.org/wiki/A*_search_algorithm)
-
-"""
-
 import math
-from sys import argv
+from time import time
 
 import matplotlib.pyplot as plt
-
+from sys import argv
 from distance import findPathDistance
 from timing import timeIt
 
 show_animation = True if len(argv) > 1 and argv[1] == "-a" else False
 
 
-class AStarPlanner:
+class ARAPlanner:
 
     def __init__(self, ox, oy, resolution, rr):
         """
@@ -52,7 +41,7 @@ class AStarPlanner:
             return str(self.x) + "," + str(self.y) + "," + str(
                 self.cost) + "," + str(self.parent_index)
 
-    def planning(self, sx, sy, gx, gy):
+    def planning(self, sx, sy, gx, gy, inflation, delta, timeWindow):
         """
         A star path search
 
@@ -61,6 +50,9 @@ class AStarPlanner:
             s_y: start y position [m]
             gx: goal x position [m]
             gy: goal y position [m]
+            inflation: starting inflation factor for heuristic
+            delta: amount to decrement inflation factor each attempt
+            timeWindow: amount of time to give the algorithm to compute solution
 
         output:
             rx: x position list of the final path
@@ -71,67 +63,73 @@ class AStarPlanner:
                                self.calc_xy_index(sy, self.min_y), 0.0, -1)
         goal_node = self.Node(self.calc_xy_index(gx, self.min_x),
                               self.calc_xy_index(gy, self.min_y), 0.0, -1)
+     
+        start = time()
+        previous_closed_set = None
 
-        open_set, closed_set = dict(), dict()
-        open_set[self.calc_grid_index(start_node)] = start_node
-        while 1:
-            if len(open_set) == 0:
-                print("Open set is empty..")
-                break
+        while inflation > 1:
+            open_set, closed_set = dict(), dict()
+            open_set[self.calc_grid_index(start_node)] = start_node
 
-            c_id = min(
-                open_set,
-                key=lambda o: open_set[o].cost + self.calc_heuristic(goal_node,
-                                                                     open_set[
-                                                                         o]))
-            current = open_set[c_id]
+            while time() - start < timeWindow:
+                if len(open_set) == 0:
+                    print("Open set is empty..")
+                    break
 
-            # show graph
-            if show_animation:  # pragma: no cover
-                plt.plot(self.calc_grid_position(current.x, self.min_x),
-                         self.calc_grid_position(current.y, self.min_y), "xc")
-                # for stopping simulation with the esc key.
-                plt.gcf().canvas.mpl_connect('key_release_event',
-                                             lambda event: [exit(
-                                                 0) if event.key == 'escape' else None])
-                if len(closed_set.keys()) % 10 == 0:
-                    plt.pause(0.001)
+                c_id = min(
+                    open_set,
+                    key=lambda o: open_set[o].cost + self.calc_heuristic(goal_node,
+                                                                        open_set[o],
+                                                                        inflation))
+                current = open_set[c_id]
 
-            if current.x == goal_node.x and current.y == goal_node.y:
-                print("Find goal")
-                goal_node.parent_index = current.parent_index
-                goal_node.cost = current.cost
-                break
+                # show graph
+                if show_animation:  # pragma: no cover
+                    plt.plot(self.calc_grid_position(current.x, self.min_x),
+                            self.calc_grid_position(current.y, self.min_y), "xc")
+                    # for stopping simulation with the esc key.
+                    plt.gcf().canvas.mpl_connect('key_release_event',
+                                                lambda event: [exit(
+                                                    0) if event.key == 'escape' else None])
+                    if len(closed_set.keys()) % 10 == 0:
+                        plt.pause(0.001)
 
-            # Remove the item from the open set
-            del open_set[c_id]
+                if current.x == goal_node.x and current.y == goal_node.y:
+                    print("Find goal")
+                    goal_node.parent_index = current.parent_index
+                    goal_node.cost = current.cost
+                    previous_closed_set = closed_set
+                    break
 
-            # Add it to the closed set
-            closed_set[c_id] = current
+                # Remove the item from the open set
+                del open_set[c_id]
 
-            # expand_grid search grid based on motion model
-            for i, _ in enumerate(self.motion):
-                node = self.Node(current.x + self.motion[i][0],
-                                 current.y + self.motion[i][1],
-                                 current.cost + self.motion[i][2], c_id)
-                n_id = self.calc_grid_index(node)
+                # Add it to the closed set
+                closed_set[c_id] = current
 
-                # If the node is not safe, do nothing
-                if not self.verify_node(node):
-                    continue
+                # expand_grid search grid based on motion model
+                for i, _ in enumerate(self.motion):
+                    node = self.Node(current.x + self.motion[i][0],
+                                    current.y + self.motion[i][1],
+                                    current.cost + self.motion[i][2], c_id)
+                    n_id = self.calc_grid_index(node)
 
-                if n_id in closed_set:
-                    continue
+                    # If the node is not safe, do nothing
+                    if not self.verify_node(node):
+                        continue
 
-                if n_id not in open_set:
-                    open_set[n_id] = node  # discovered a new node
-                else:
-                    if open_set[n_id].cost > node.cost:
-                        # This path is the best until now. record it
-                        open_set[n_id] = node
+                    if n_id in closed_set:
+                        continue
 
-        rx, ry = self.calc_final_path(goal_node, closed_set)
-
+                    if n_id not in open_set:
+                        open_set[n_id] = node  # discovered a new node
+                    else:
+                        if open_set[n_id].cost > node.cost:
+                            # This path is the best until now. record it
+                            open_set[n_id] = node
+            inflation -= delta
+            self.count = len(previous_closed_set) + 1
+        rx, ry = self.calc_final_path(goal_node, previous_closed_set)
         return rx, ry
 
     def calc_final_path(self, goal_node, closed_set):
@@ -148,8 +146,7 @@ class AStarPlanner:
         return rx, ry
 
     @staticmethod
-    def calc_heuristic(n1, n2):
-        w = 1.0  # weight of heuristic
+    def calc_heuristic(n1, n2, w):
         d = w * math.hypot(n1.x - n2.x, n1.y - n2.y)
         return d
 
@@ -241,7 +238,7 @@ def main():
     sy = 10.0  # [m]
     gx = 50.0  # [m]
     gy = 50.0  # [m]
-    grid_size = 1.0  # [m]
+    grid_size = 1  # [m]
     robot_radius = 0.66  # [m]
 
     # set obstacle positions
@@ -271,16 +268,19 @@ def main():
         plt.plot(gx, gy, "xb")
         plt.grid(True)
         plt.axis("equal")
-
+    
     def plan():
-        a_star = AStarPlanner(ox, oy, grid_size, robot_radius)
-        rx, ry = a_star.planning(sx, sy, gx, gy)
+        a_star = ARAPlanner(ox, oy, grid_size, robot_radius)
+        rx, ry = a_star.planning(sx, sy, gx, gy, 10, 2, float(argv.pop()))
         plt.plot(rx, ry, "-r")
         print(f"Distance Traveled: {findPathDistance(rx, ry)}")
+        print(f"Nodes visited: {a_star.count}")
+
 
     print(f"Time: {timeIt(plan)} seconds")
 
     if show_animation:  # pragma: no cover
+        
         plt.pause(0.001)
         plt.show()
 
