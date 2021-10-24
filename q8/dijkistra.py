@@ -9,6 +9,7 @@ author: Atsushi Sakai(@Atsushi_twi)
 import matplotlib.pyplot as plt
 import math
 
+from distance import findPathDistance
 from timing import timeIt
 
 show_animation = True
@@ -252,7 +253,7 @@ def main():
         dijkstra = Dijkstra(ox, oy, grid_size, robot_radius)
         rx, ry = dijkstra.planning(sx, sy, gx, gy)
         plt.plot(rx, ry, "-r")
-        print(f"Distance Traveled: {len(rx)}")
+        print(f"Distance Traveled: {findPathDistance(rx, ry)}")
         
     print(f"Time: {timeIt(plan)} seconds")
 

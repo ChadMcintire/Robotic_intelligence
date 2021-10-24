@@ -13,6 +13,7 @@ import math
 
 import matplotlib.pyplot as plt
 
+from distance import findPathDistance
 from timing import timeIt
 
 show_animation = True
@@ -274,7 +275,7 @@ def main():
         a_star = AStarPlanner(ox, oy, grid_size, robot_radius)
         rx, ry = a_star.planning(sx, sy, gx, gy)
         plt.plot(rx, ry, "-r")
-        print(f"Distance Traveled: {len(rx)}")
+        print(f"Distance Traveled: {findPathDistance(rx, ry)}")
 
     print(f"Time: {timeIt(plan)} seconds")
 
