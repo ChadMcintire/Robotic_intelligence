@@ -34,7 +34,7 @@ class Dijkstra:
         self.x_width = None
         self.y_width = None
         self.obstacle_map = None
-
+        self.count = 0
         self.resolution = resolution
         self.robot_radius = robot_radius
         self.calc_obstacle_map(ox, oy)
@@ -75,6 +75,7 @@ class Dijkstra:
         open_set[self.calc_index(start_node)] = start_node
 
         while 1:
+            self.count = self.count + 1
             c_id = min(open_set, key=lambda o: open_set[o].cost)
             current = open_set[c_id]
 
@@ -254,6 +255,8 @@ def main():
         rx, ry = dijkstra.planning(sx, sy, gx, gy)
         plt.plot(rx, ry, "-r")
         print(f"Distance Traveled: {findPathDistance(rx, ry)}")
+        print(f"Nodes visited: {dijkstra.count}")
+
         
     print(f"Time: {timeIt(plan)} seconds")
 

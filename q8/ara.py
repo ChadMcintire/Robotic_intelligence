@@ -128,6 +128,7 @@ class ARAPlanner:
                             # This path is the best until now. record it
                             open_set[n_id] = node
             inflation -= delta
+            self.count = len(previous_closed_set) + 1
         rx, ry = self.calc_final_path(goal_node, previous_closed_set)
         return rx, ry
 
@@ -237,7 +238,7 @@ def main():
     sy = 10.0  # [m]
     gx = 50.0  # [m]
     gy = 50.0  # [m]
-    grid_size = 1.0  # [m]
+    grid_size = 1  # [m]
     robot_radius = 0.66  # [m]
 
     # set obstacle positions
@@ -273,6 +274,8 @@ def main():
         rx, ry = a_star.planning(sx, sy, gx, gy, 10, 2, float(argv.pop()))
         plt.plot(rx, ry, "-r")
         print(f"Distance Traveled: {findPathDistance(rx, ry)}")
+        print(f"Nodes visited: {a_star.count}")
+
 
     print(f"Time: {timeIt(plan)} seconds")
 

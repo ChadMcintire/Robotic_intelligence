@@ -129,6 +129,7 @@ class AStarPlanner:
                     if open_set[n_id].cost > node.cost:
                         # This path is the best until now. record it
                         open_set[n_id] = node
+        self.count = len(closed_set) + 1
 
         rx, ry = self.calc_final_path(goal_node, closed_set)
 
@@ -246,6 +247,7 @@ def main():
 
     # set obstacle positions
     ox, oy = [], []
+    # outside boundary
     for i in range(-10, 60):
         ox.append(i)
         oy.append(-10.0)
@@ -258,6 +260,7 @@ def main():
     for i in range(-10, 61):
         ox.append(-10.0)
         oy.append(i)
+
     for i in range(-10, 40):
         ox.append(20.0)
         oy.append(i)
@@ -277,6 +280,7 @@ def main():
         rx, ry = a_star.planning(sx, sy, gx, gy)
         plt.plot(rx, ry, "-r")
         print(f"Distance Traveled: {findPathDistance(rx, ry)}")
+        print(f"Nodes visited: {a_star.count}")
 
     print(f"Time: {timeIt(plan)} seconds")
 
