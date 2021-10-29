@@ -7,6 +7,7 @@ from distance import findPathDistance
 from timing import timeIt
 
 show_animation = True if len(argv) > 1 and argv[1] == "-a" else False
+print_images =  "-i" in argv
 
 
 class ARAPlanner:
@@ -93,6 +94,12 @@ class ARAPlanner:
                                                     0) if event.key == 'escape' else None])
                     if len(closed_set.keys()) % 10 == 0:
                         plt.pause(0.001)
+                    if len(closed_set.keys()) % 50 == 0 and print_images:
+                        fname = f"images/ara-{inflation}-{len(closed_set.keys())}.png"
+                        rx, ry = self.calc_final_path(goal_node, previous_closed_set)
+                        plt.plot(rx, ry, "-r")
+                        print(f"Wrote to {fname}")
+                        plt.savefig(fname)
 
                 if current.x == goal_node.x and current.y == goal_node.y:
                     print("Find goal")

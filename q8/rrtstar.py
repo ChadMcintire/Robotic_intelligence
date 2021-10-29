@@ -14,6 +14,7 @@ RRT_star 2D
 import os
 import sys
 import math
+from matplotlib.pyplot import show
 import numpy as np
 import distance
 from timing import timeIt
@@ -21,6 +22,7 @@ from timing import timeIt
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../Sampling_based_Planning/")
 show_animation = True if len(sys.argv) > 1 and sys.argv[1] == "-a" else False
+print_images =  "-i" in sys.argv
 
 import env, plotting, utils, myQueue
 
@@ -64,6 +66,10 @@ class RrtStar:
 
             if k % 500 == 0:
                 print(k)
+
+            if  k % 50 == 0 and show_animation and print_images:
+                self.plotting.animation(self.vertex, self.path, "rrt*, N = " + str(self.iter_max), animation=False, show=False)
+                self.plotting.save_file(k)
 
             if node_new and not self.utils.is_collision(node_near, node_new):
                 neighbor_index = self.find_near_neighbor(node_new)
