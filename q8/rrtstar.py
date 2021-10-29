@@ -84,7 +84,7 @@ class RrtStar:
         index = self.search_goal_parent()
         self.path = self.extract_path(self.vertex[index])
         if show_animation:
-            self.plotting.animation(self.vertex, self.path, "rrt*, N = " + str(self.iter_max), animation=True)
+            self.plotting.animation(self.vertex, self.path, "rrt*, N = " + str(self.iter_max), animation=True, show=False)
 
     def new_state(self, node_start, node_goal):
         dist, theta = self.get_distance_and_angle(node_start, node_goal)
