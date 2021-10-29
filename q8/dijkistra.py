@@ -91,7 +91,7 @@ class Dijkstra:
                     plt.pause(0.001)
                 if len(closed_set.keys()) % 50 == 0 and print_images:
                     fname = f"images/dijkistra-{len(closed_set.keys())}.png"
-                    rx, ry = self.calc_final_path(goal_node, closed_set)
+                    rx, ry = self.calc_final_path(current, closed_set)
                     plt.plot(rx, ry, "-r")
                     print(f"Wrote to {fname}")
                     plt.savefig(fname)

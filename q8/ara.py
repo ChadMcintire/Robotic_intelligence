@@ -96,7 +96,7 @@ class ARAPlanner:
                         plt.pause(0.001)
                     if len(closed_set.keys()) % 50 == 0 and print_images:
                         fname = f"images/ara-{inflation}-{len(closed_set.keys())}.png"
-                        rx, ry = self.calc_final_path(goal_node, previous_closed_set)
+                        rx, ry = self.calc_final_path(current, closed_set)
                         plt.plot(rx, ry, "-r")
                         print(f"Wrote to {fname}")
                         plt.savefig(fname)
