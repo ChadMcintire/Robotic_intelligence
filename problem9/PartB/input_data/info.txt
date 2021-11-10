@@ -1,0 +1,9 @@
+1.jpg - label: /f/fire_escape
+
+2.jpg - label: /f/fountain
+
+3.jpg - label: /w/warehouse/indoor
+
+4.jpg - label: /b/baseball_field
+
+5.jpg - label: /c/church/outdoor
