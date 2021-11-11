@@ -67,6 +67,7 @@ class ARAPlanner:
      
         start = time()
         previous_closed_set = None
+        self.count = 0
 
         while inflation > 1:
             open_set, closed_set = dict(), dict()
@@ -135,7 +136,11 @@ class ARAPlanner:
                             # This path is the best until now. record it
                             open_set[n_id] = node
             inflation -= delta
-            self.count = len(previous_closed_set) + 1
+            if not previous_closed_set is None:   
+                self.count = len(previous_closed_set) + 1
+            else: 
+                print("No solution found in time")
+                break
         rx, ry = self.calc_final_path(goal_node, previous_closed_set)
         return rx, ry
 
