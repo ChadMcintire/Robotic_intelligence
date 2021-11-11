@@ -1,6 +1,6 @@
 q8/*.png
 *.DS_STORE
-q8/__pycache__
+*__pycache__*
 # exclude everything except directory foo/bar
 *.png
 *.jpg
