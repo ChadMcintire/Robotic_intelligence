@@ -1,0 +1,18 @@
+#needed this for this ERROR: GLEW initalization error: Missing GL version
+sudo apt install libglew-dev
+
+#add this to .bashrc
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so
+
+#to initially set up put the mujoco folder in ~/.mujoco/
+#then you need to give the path to the system
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/chad/.mujoco/mujoco200/bin
+
+#might need to add this if it doesn't work
+sudo apt install libosmesa6-dev libgl1-mesa-glx libglfw
+
+#then you can pip install
+pip3 install -U 'mujoco-py<2.1,>=2.0'
+
+
+
