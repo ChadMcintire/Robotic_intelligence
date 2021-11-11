@@ -22,15 +22,20 @@ class Plotting:
         self.obs_circle = self.env.obs_circle
         self.obs_rectangle = self.env.obs_rectangle
 
-    def animation(self, nodelist, path, name, animation=False):
+    def animation(self, nodelist, path, name, animation=False, show=True):
         self.plot_grid(name)
         self.plot_visited(nodelist, animation)
-        self.plot_path(path)
+        self.plot_path(path, show)
 
     def animation_connect(self, V1, V2, path, name):
         self.plot_grid(name)
         self.plot_visited_connect(V1, V2)
         self.plot_path(path)
+
+    def save_file(self , k):
+        fname = f"images/rrtsar-{k}.png"
+        print(f"Wrote to {fname}")
+        plt.savefig(fname)
 
     def plot_grid(self, name):
         fig, ax = plt.subplots()
@@ -110,8 +115,9 @@ class Plotting:
         plt.pause(0.01)
 
     @staticmethod
-    def plot_path(path):
+    def plot_path(path, show=True):
         if len(path) != 0:
             plt.plot([x[0] for x in path], [x[1] for x in path], '-r', linewidth=2)
             plt.pause(0.01)
-        plt.show()
+        if show:
+            plt.show()

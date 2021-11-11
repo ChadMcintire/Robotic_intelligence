@@ -12,8 +12,8 @@ from sys import argv
 from distance import findPathDistance
 from timing import timeIt
 
-show_animation = True if len(argv) > 1 and argv[1] == "-a" else False
-
+show_animation = "-a" in argv
+print_images =  "-i" in argv
 
 class Dijkstra:
 
@@ -89,6 +89,12 @@ class Dijkstra:
                     lambda event: [exit(0) if event.key == 'escape' else None])
                 if len(closed_set.keys()) % 10 == 0:
                     plt.pause(0.001)
+                if len(closed_set.keys()) % 50 == 0 and print_images:
+                    fname = f"images/dijkistra-{len(closed_set.keys())}.png"
+                    rx, ry = self.calc_final_path(current, closed_set)
+                    plt.plot(rx, ry, "-r")
+                    print(f"Wrote to {fname}")
+                    plt.savefig(fname)
 
             if current.x == goal_node.x and current.y == goal_node.y:
                 print("Find goal")
@@ -261,6 +267,9 @@ def main():
     print(f"Time: {timeIt(plan)} seconds")
 
     if show_animation:  # pragma: no cover
+        if print_images:
+            fname = f"images/dijkistra-final.png"
+            plt.savefig(fname)
         plt.pause(0.01)
         plt.show()
 
