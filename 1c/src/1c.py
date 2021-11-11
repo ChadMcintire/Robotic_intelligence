@@ -19,6 +19,10 @@ def main():
     plot_error(L, v_rear, alpha, t, R, names, delta_t, debug=False)
     plot_comp_time(L, v_rear, alpha, t, names, delta_t)
 
+    names = ['delta_t = 0.1', 'delta_t = 0.01']
+    delta_t = [0.1, 0.01]
+    plot_error(L, v_rear, alpha, t, R, names, delta_t, debug=False)
+
 
 def plot_error(L, v_rear, alpha, t, R, names, delta_t, debug=False):
     for i in range(len(delta_t)):
